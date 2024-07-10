@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PKG_DIR=dist/trilium-linux-x64-server
-NODE_VERSION=18.18.2
+NODE_VERSION=18.20.4
 
 if [ "$1" != "DONTCOPY" ]
 then
@@ -23,9 +23,10 @@ rm -r $PKG_DIR/node_modules/electron*
 rm -r $PKG_DIR/webpack*
 rm -r $PKG_DIR/electron.js
 
+mkdir -p $PKG_DIR/node_modules/better-sqlite3/build/Release/
 cp -r bin/better-sqlite3/linux-server-better_sqlite3.node $PKG_DIR/node_modules/better-sqlite3/build/Release/better_sqlite3.node
 
-printf "#!/bin/sh\n./node/bin/node src/www" > $PKG_DIR/trilium.sh
+printf "#!/bin/sh\nNODE_OPTIONS=\"-r ts-node/register\" ./node/bin/node src/www.ts" > $PKG_DIR/trilium.sh
 chmod 755 $PKG_DIR/trilium.sh
 
 cp bin/tpl/anonymize-database.sql $PKG_DIR/
