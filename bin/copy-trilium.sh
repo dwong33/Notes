@@ -9,7 +9,7 @@ if ! [[ $(which npm) ]]; then
     exit 1
 fi
 
-n exec 18.18.2 npm run webpack || npm run webpack
+n exec 18.20.4 npm run webpack || npm run webpack
 
 DIR="$1"
 
