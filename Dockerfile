@@ -25,12 +25,12 @@ RUN set -x \
     && apk del .build-dependencies \
     && npm run webpack \
     && npm prune --omit=dev \
-    && mkdir -p dist/src/public/app-dist \
-    && cp src/public/app/share.js dist/src/public/app-dist/. \
-    && cp -r src/public/app/doc_notes dist/src/public/app-dist/. \
+    && mkdir -p compiledJS/src/public/app-dist \
+    && cp src/public/app/share.js compiledJS/src/public/app-dist/. \
+    && cp -r src/public/app/doc_notes compiledJS/src/public/app-dist/. \
     && rm -rf src/public/app \
     && rm -rf src \
-    && mv dist/* .
+    && mv compiledJS/* .
 
 # Some setup tools need to be kept
 RUN apk add --no-cache su-exec shadow

@@ -3,6 +3,10 @@
 VERSION=`jq -r ".version" package.json`
 SERIES=${VERSION:0:4}-latest
 
+if ! [[ $(which tsc) ]]; then
+    npm i -g typescript
+fi
+
 cat package.json > server-package.json
 
 echo "Compiling typescript..."
