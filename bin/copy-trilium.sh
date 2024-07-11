@@ -21,7 +21,7 @@ echo "Copying Trilium to build directory $DIR"
 for d in 'images' 'libraries' 'src' 'db'; do
     cp -r "$d" "$DIR"/
 done
-for f in 'package.json' 'package-lock.json' 'README.md' 'LICENSE' 'config-sample.ini' 'electron.js'; do
+for f in 'package.json' 'package-lock.json' 'README.md' 'LICENSE' 'config-sample.ini' 'electron.ts'; do
     cp "$f" "$DIR"/
 done
 cp webpack-* "$DIR"/      # here warning because there is no 'webpack-*', but webpack.config.js only

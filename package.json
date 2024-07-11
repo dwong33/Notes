@@ -4,9 +4,9 @@
     "description": "Trilium Notes",
     "version": "0.63.5",
     "license": "AGPL-3.0-only",
-    "main": "electron.js",
+    "main": "electron.ts",
     "bin": {
-        "trilium": "src/www.js"
+        "trilium": "src/www.ts"
     },
     "repository": {
         "type": "git",
@@ -16,7 +16,7 @@
         "start-server": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 nodemon src/www.ts",
         "start-server-no-dir": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 nodemon src/www.ts",
         "qstart-server": "npm run qswitch-server && TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 nodemon src/www.ts",
-        "start-electron": "rimraf ./dist && tsc && ts-node ./bin/copy-dist.ts && cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev electron ./dist/electron.js --inspect=5858 .",
+        "start-electron": "rimraf ./dist && tsc && ts-node ./bin/copy-dist.ts && cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev electron ./dist/electron.ts --inspect=5858 .",
         "start-electron-no-dir": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 electron --inspect=5858 .",
         "qstart-electron": "npm run qswitch-electron && TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev electron --inspect=5858 .",
         "start-test-server": "npm run qswitch-server; rm -rf ./data-test; cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data-test TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev TRILIUM_PORT=9999 ts-node src/www.ts",

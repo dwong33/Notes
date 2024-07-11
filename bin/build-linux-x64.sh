@@ -7,6 +7,7 @@ SRC_DIR=./dist/trilium-linux-x64-src
 rm -r "$SRC_DIR"/src/public/app-dist/*.mobile.*
 
 echo "Copying required linux-x64 binaries"
+mkdir -p /dist/trilium-linux-x64-src/node_modules/better-sqlite3/build/Release/
 cp -r bin/better-sqlite3/linux-desktop-better_sqlite3.node "$SRC_DIR"/node_modules/better-sqlite3/build/Release/better_sqlite3.node
 
 echo "Packaging linux x64 electron build"

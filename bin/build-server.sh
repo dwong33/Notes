@@ -21,7 +21,7 @@ rm -r $PKG_DIR/node/include/node
 
 rm -r $PKG_DIR/node_modules/electron*
 rm -r $PKG_DIR/webpack*
-rm -r $PKG_DIR/electron.js
+rm -r $PKG_DIR/electron.ts
 
 mkdir -p $PKG_DIR/node_modules/better-sqlite3/build/Release/
 cp -r bin/better-sqlite3/linux-server-better_sqlite3.node $PKG_DIR/node_modules/better-sqlite3/build/Release/better_sqlite3.node
