@@ -3,14 +3,10 @@
 VERSION=`jq -r ".version" package.json`
 SERIES=${VERSION:0:4}-latest
 
-if ! [[ $(which tsc) ]]; then
-    npm i -g typescript
-fi
-
-cat package.json > server-package.json
+cat package.json | grep -v "electron" > server-package.json
 
 echo "Compiling typescript..."
-tsc
+npx tsc
 
 sudo docker build -t zadam/trilium:$VERSION --network host -t zadam/trilium:$SERIES .
 

@@ -9,11 +9,7 @@ if ! [[ $(which npm) ]]; then
     exit 1
 fi
 
-if ! [[ $(which tsc) ]]; then
-    npm i -g typescript
-fi
-
-tsc
+npx tsc
 
 n exec 18.18.2 npm run webpack || npm run webpack
 
@@ -36,7 +32,6 @@ done
 cp webpack-* "$DIR"/      # here warning because there is no 'webpack-*', but webpack.config.ts only
 
 # run in subshell (so we return to original dir)
-# (cd $DIR && n exec 18.18.2 npm install --omit=dev && n exec 18.18.2 npm rebuild)
 (cd $DIR && npm install --omit=dev && npm rebuild)
 
 if [[ -d "$DIR"/node_modules ]]; then
