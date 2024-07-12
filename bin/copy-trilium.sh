@@ -24,7 +24,7 @@ mkdir -pv "$DIR"
 
 echo "Copying Trilium to build directory $DIR"
 
-mv compiledJS/* "$DIR"/
+mv build/* "$DIR"/
 
 for d in 'images' 'libraries' 'src' 'db'; do
     cp -r "$d" "$DIR"/

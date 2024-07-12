@@ -14,4 +14,4 @@ data/
 data-test/
 tmp/
 .eslintcache
-compiledJS/
+build/
