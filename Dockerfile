@@ -27,10 +27,13 @@ RUN set -x \
     && npm prune --omit=dev \
     && mkdir -p build/src/public/app-dist \
     && cp src/public/app/share.js build/src/public/app-dist/. \
+    && cp src/public/app/setup.js build/src/public/app-dist/. \
     && cp -r src/public/app/doc_notes build/src/public/app-dist/. \
-    && rm -rf src/public/app \
-    && rm -rf src \
-    && mv build/* .
+    && cp -r src/public/app/services build/src/public/app-dist/. \
+    && mv ./src/views/ ./build/src/ \
+    && rm -rf src/ \
+    && mv ./build/* . 
+
 
 # Some setup tools need to be kept
 RUN apk add --no-cache su-exec shadow
