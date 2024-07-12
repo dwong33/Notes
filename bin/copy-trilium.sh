@@ -25,6 +25,7 @@ mkdir -pv "$DIR"
 echo "Copying Trilium to build directory $DIR"
 
 mv build/* "$DIR"/
+rm -rf build
 
 for d in 'images' 'libraries' 'src' 'db'; do
     cp -r "$d" "$DIR"/
