@@ -9,6 +9,12 @@ if ! [[ $(which npm) ]]; then
     exit 1
 fi
 
+if ! [[ $(which tsc) ]]; then
+    npm i -g typescript
+fi
+
+tsc
+
 n exec 18.18.2 npm run webpack || npm run webpack
 
 DIR="$1"
@@ -18,16 +24,19 @@ mkdir -pv "$DIR"
 
 echo "Copying Trilium to build directory $DIR"
 
+mv compiledJS/* "$DIR"/
+
 for d in 'images' 'libraries' 'src' 'db'; do
     cp -r "$d" "$DIR"/
 done
-for f in 'package.json' 'package-lock.json' 'README.md' 'LICENSE' 'config-sample.ini' 'electron.js'; do
+for f in 'README.md' 'LICENSE' 'config-sample.ini'; do
     cp "$f" "$DIR"/
 done
 cp webpack-* "$DIR"/      # here warning because there is no 'webpack-*', but webpack.config.ts only
 
 # run in subshell (so we return to original dir)
-(cd $DIR && n exec 18.18.2 npm install --only=prod)
+# (cd $DIR && n exec 18.18.2 npm install --omit=dev && n exec 18.18.2 npm rebuild)
+(cd $DIR && npm install --omit=dev && npm rebuild)
 
 if [[ -d "$DIR"/node_modules ]]; then
 # cleanup of useless files in dependencies
@@ -49,4 +58,5 @@ cp "$d"/app/share.js "$d"/app-dist/
 cp -r "$d"/app/doc_notes "$d"/app-dist/
 
 rm -rf "$d"/app
+rm -rf "$DIR"/*.ts
 unset f d DIR
