@@ -3,7 +3,7 @@
         "moduleResolution": "Node",
         "declaration": false,
         "sourceMap": true,
-        "outDir": "./build",
+        "outDir": "./srcbuild",
         "strict": true,
         "noImplicitAny": true,
         "resolveJsonModule": true,
