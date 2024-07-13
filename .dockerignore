@@ -1,7 +1,7 @@
 .git
 .idea
 /bin
+/dist
 /docs
 /npm-debug.log
-dist
 node_modules
