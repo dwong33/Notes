@@ -1,20 +1,26 @@
 {
-    "compilerOptions": {
-        "moduleResolution": "Node",
-        "declaration": false,
-        "sourceMap": true,
-        "outDir": "./build",
-        "strict": true,
-        "noImplicitAny": true,
-        "resolveJsonModule": true,
-        "lib": ["ES2022"],
-        "downlevelIteration": true,
-        "skipLibCheck": true
-    },
-    "include": ["./src/**/*.js", "./src/**/*.ts", "./*.ts"],
-    "exclude": ["./node_modules/**/*"],
-    "ts-node": {
-        "files": true
-    },
-    "files": ["src/types.d.ts"]
-}
+	"compilerOptions": {
+      "moduleResolution": "Node",
+	  "declaration": false,
+	  "sourceMap": true,
+	  "outDir": "./build",
+	  "strict": true,
+	  "noImplicitAny": true,
+	  "resolveJsonModule": true,
+	  "lib": ["ES2022"],
+	  "downlevelIteration": true,
+	  "skipLibCheck": true
+	},
+	"include": [
+      "./src/**/*.js",
+	  "./src/**/*.ts",
+    "./*.ts"
+	],
+	"exclude": ["./node_modules/**/*"],
+	"ts-node": {
+		"files": true
+	},
+	"files": [
+		"src/types.d.ts"
+	]
+  }
