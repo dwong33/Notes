@@ -38,7 +38,9 @@ export default class NoteTitleWidget extends NoteContextAwareWidget {
 
             protectedSessionHolder.touchProtectedSessionIfNecessary(this.note);
 
-            await server.put(`notes/${this.noteId}/title`, {title}, this.componentId);
+            // Allowing "" and " " will trigger SQL errors when title is deleted
+            if ( title !== "" && title != " ")
+                await server.put(`notes/${this.noteId}/title`, {title}, this.componentId);
         });
 
         this.deleteNoteOnEscape = false;

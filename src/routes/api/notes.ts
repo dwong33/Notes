@@ -138,9 +138,6 @@ function changeTitle(req: Request) {
 
     const note = becca.getNoteOrThrow(noteId);
 
-    if ( title !== " " )
-        return note
-
     if (!note.isContentAvailable()) {
         throw new ValidationError(`Note '${noteId}' is not available for change`);
     }
