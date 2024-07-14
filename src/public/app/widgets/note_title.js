@@ -38,8 +38,8 @@ export default class NoteTitleWidget extends NoteContextAwareWidget {
 
             protectedSessionHolder.touchProtectedSessionIfNecessary(this.note);
 
-            // Allowing "" and " " will trigger SQL errors when title is deleted
-            if ( title !== "" && title != " ")
+            // Regex is making sure the title is not full of spaces
+            if ( title.match("^(?!\\s*$)"))
                 await server.put(`notes/${this.noteId}/title`, {title}, this.componentId);
         });
 
