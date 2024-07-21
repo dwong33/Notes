@@ -34,8 +34,8 @@
     --detail-font-family: var(--main-font-family);
     --detail-font-size: var(--ramp-body-size);
 
-    --monospace-font-family: JetBrainsLight;
-    --monospace-font-size: normal;
+    --monospace-font-family: "Consolas";
+    --monospace-font-size: var(--ramp-body-size);
 
     --main-background-color: #333;
     --main-text-color: #ccc;
