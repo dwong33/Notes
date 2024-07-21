@@ -42,7 +42,7 @@
     --main-border-color: #aaa;
     --dropdown-border-color: #555;
 
-    --accented-background-color: #555;
+    --accented-background-color: #3b3b3b;
     --more-accented-background-color: #777;
 
     --button-background-color: transparent;
@@ -132,4 +132,11 @@ span.fancytree-node:hover {
 
 span.fancytree-active .fancytree-title { 
     font-weight: unset;
+}
+
+/* Card style */
+
+.note-book-card {
+    border-radius: 5px !important;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
 }
