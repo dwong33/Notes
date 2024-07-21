@@ -1,14 +1,38 @@
 :root {
+    /* Theme-specific constants */    
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+
+    /* Font sizes: https://learn.microsoft.com/en-us/windows/apps/design/style/xaml-theme-resources#the-xaml-type-ramp */
+    --ramp-caption-size: 12;
+    --ramp-body-size: 14;
+    --ramp-body-strong-size: 14;
+    --ramp-body-large-size: 18;
+    --ramp-subtitle-size: 20;
+    --ramp-title-size: 28;
+    --ramp-title-large-size: 40;
+    --ramp-display-size: 68;
+
+    --ramp-caption-weight: var(--font-weight-regular);
+    --ramp-body-weight: var(--font-weight-regular);
+    --ramp-body-strong-weight: var(--font-weight-semibold);
+    --ramp-body-large-weight: var(--font-weight-regular);
+    --ramp-subtitle-weight: var(--font-weight-semibold);
+    --ramp-title-weight: var(--font-weight-semibold);
+    --ramp-title-large-weight: var(--font-weight-semibold);
+    --ramp-display-weight: var(--font-weight-semibold);
+
+    /* Overrides */    
     --theme-style: dark;
 
-    --main-font-family: Montserrat;
-    --main-font-size: normal;
+    --main-font-family: "Segoe UI Variable Display";
+    --main-font-size: var(--ramp-body-size);
 
-    --tree-font-family: Montserrat;
-    --tree-font-size: normal;
+    --tree-font-family: var(--main-font-family);
+    --tree-font-size: var(--ramp-body-size);
 
-    --detail-font-family: Montserrat;
-    --detail-font-size: normal;
+    --detail-font-family: var(--main-font-family);
+    --detail-font-size: var(--ramp-body-size);
 
     --monospace-font-family: JetBrainsLight;
     --monospace-font-size: normal;
