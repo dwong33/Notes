@@ -41,6 +41,7 @@
     "make-electron": "npm run webpack && npm run prepare-dist && electron-forge make",
     "package-electron": "electron-forge package",
     "prepare-dist": "rimraf ./dist && tsc && ts-node ./bin/copy-dist.ts",
+    "watch-dist": "ts-node ./bin/watch-dist.ts",
     "update-build-info": "ts-node bin/update-build-info.ts"
   },
   "dependencies": {
