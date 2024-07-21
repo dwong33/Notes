@@ -37,7 +37,7 @@
     --monospace-font-family: "Consolas";
     --monospace-font-size: var(--ramp-body-size);
 
-    --main-background-color: #333;
+    --main-background-color: transparent;
     --main-text-color: #fff;
     --main-border-color: #686868;
     --dropdown-border-color: #555;
@@ -75,10 +75,10 @@
     --modal-background-color: #333;
     --modal-backdrop-color: #444;
 
-    --left-pane-background-color: #1f1f1f;
+    --left-pane-background-color: transparent;
     --left-pane-text-color: var(--main-text-color);
 
-    --launcher-pane-background-color: #1f1f1f;
+    --launcher-pane-background-color: transparent;
     --launcher-pane-text-color: #AAAAAA;
 
     --active-tab-background-color: #666;

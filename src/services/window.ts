@@ -61,13 +61,14 @@ async function createMainWindow(app: App) {
         width: mainWindowState.width,
         height: mainWindowState.height,
         title: 'TriliumNext Notes',
+        backgroundMaterial: "mica",
+        titleBarStyle: "hidden",
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             spellcheck: spellcheckEnabled,
             webviewTag: true
         },
-        frame: optionService.getOptionBool('nativeTitleBarVisible'),
         icon: getIcon()
     });
 
