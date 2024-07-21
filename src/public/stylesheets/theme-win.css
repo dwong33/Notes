@@ -140,3 +140,8 @@ span.fancytree-active .fancytree-title {
     border-radius: 5px !important;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
 }
+
+.note-book-card:hover {
+    background-color: #484848 !important;
+    border-color: transparent !important;
+}
