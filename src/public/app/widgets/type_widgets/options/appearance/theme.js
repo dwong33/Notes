@@ -39,7 +39,8 @@ export default class ThemeOptions extends OptionsWidget {
     async optionsLoaded(options) {
         const themes = [
             { val: 'light', title: 'Light' },
-            { val: 'dark', title: 'Dark' }
+            { val: 'dark', title: 'Dark' },
+            { val: 'win', title: 'Windows' }
         ].concat(await server.get('options/user-themes'));
 
         this.$themeSelect.empty();

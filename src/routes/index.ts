@@ -49,6 +49,8 @@ function getThemeCssUrl(theme: string) {
         return false; // light theme is always loaded as baseline
     } else if (theme === 'dark') {
         return `${assetPath}/stylesheets/theme-dark.css`;
+    } else if (theme === "win") {
+        return `${assetPath}/stylesheets/theme-win.css`;
     } else {
         const themeNote = attributeService.getNoteWithLabel('appTheme', theme);
 
