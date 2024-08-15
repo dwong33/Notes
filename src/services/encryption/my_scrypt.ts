@@ -1,9 +1,9 @@
 "use strict";
 
-import optionService = require("../options");
-import crypto = require("crypto");
-import utils = require("../utils");
-import sql = require("../sql");
+import optionService from "../options.js";
+import crypto from "crypto";
+import optionService from "../options.js";
+import crypto from "crypto";
 
 function getVerificationHash(password: crypto.BinaryLike) {
   const salt = optionService.getOption("passwordVerificationSalt");
@@ -75,7 +75,7 @@ function createSubjectIdentifierDerivedKey(
   return getScryptHash(subjectIdentifer, salt);
 }
 
-export = {
+export default {
   getVerificationHash,
   getPasswordDerivedKey,
   getSubjectIdentifierVerificationHash,

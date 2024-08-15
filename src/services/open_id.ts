@@ -126,7 +126,7 @@ function generateOAuthConfig() {
   return authConfig;
 }
 
-export = {
+export default {
   generateOAuthConfig,
   getOAuthStatus,
   isOpenIDEnabled,

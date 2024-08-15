@@ -1,16 +1,24 @@
-import express = require('express');
-import path = require('path');
-import favicon = require('serve-favicon');
-import cookieParser = require('cookie-parser');
-import helmet = require('helmet');
-import compression = require('compression');
-import sessionParser = require('./routes/session_parser');
-import utils = require('./services/utils');
-import oidc = require('express-openid-connect');
-import openID = require('./services/open_id');
+import express from "express";
+import path from "path";
+import favicon from "serve-favicon";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import compression from "compression";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import sessionParser from "./routes/session_parser.js";
+import utils from "./services/utils.js";
+import assets from "./routes/assets.js";
+import routes from "./routes/routes.js";
+import custom from "./routes/custom.js";
+import error_handlers from "./routes/error_handlers.js";
+import { startScheduledCleanup } from "./services/erase.js";
+import sql_init from "./services/sql_init.js";
+import oidc from 'express-openid-connect';
+import openID from './services/open_id.js';
 
-require('./services/handlers');
-require('./becca/becca_loader');
+await import('./services/handlers.js');
+await import('./becca/becca_loader.js');
 require('dotenv').config();
 
 const app = express();
@@ -43,10 +51,10 @@ app.use(favicon(`${__dirname}/../images/app-icons/win/icon.ico`));
 if (openID.checkOpenIDRequirements()) 
     app.use(oidc.auth(openID.generateOAuthConfig()));
 
-require('./routes/assets').register(app);
-require('./routes/routes').register(app);
-require('./routes/custom').register(app);
-require('./routes/error_handlers').register(app);
+assets.register(app);
+routes.register(app);
+custom.register(app);
+error_handlers.register(app);
 
 // triggers sync timer
 require('./services/sync');

@@ -15,3 +15,14 @@ data-test/
 tmp/
 .eslintcache
 .env
+
+out/
+
+images/app-icons/png/512x512.png
+images/app-icons/png/1024x1024.png
+images/app-icons/mac/*.png
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
