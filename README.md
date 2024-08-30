@@ -14,7 +14,7 @@ See [screenshots](https://triliumnext.github.io/Docs/Wiki/screenshot-tour) for q
 
 ### Migrating from Trilium?
 
-There are no special migration steps to migrate from a zadam/Trilium instance to a TriliumNext/Notes instance. Just [install TriliumNext/Notes as usual](#-installation) 
+There are no special migration steps to migrate from a zadam/Trilium instance to a TriliumNext/Notes instance. Just upgrade your existing Trilium instance to the latest version and [install TriliumNext/Notes as usual](#-installation) 
 
 ## 💬 Discuss with us
 
