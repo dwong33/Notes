@@ -65,10 +65,20 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Run the container in the background
-        run: docker run -d --rm --name trilium_local ${{ env.TEST_TAG }}
-
+      
+      - name: Validate container run output
+        run: |
+          CONTAINER_ID=$(docker run -d --log-driver=journald --rm --name trilium_local ${{ env.TEST_TAG }})
+          echo "Container ID: $CONTAINER_ID"
+      
+      - name: Capture Docker container logs for 10 seconds
+        run: |
+          sleep 10
+          journalctl -u docker CONTAINER_NAME=trilium_local --no-pager
+      
+      - name: Print running Docker containers
+        run: docker ps
+      
       - name: Wait for the healthchecks to pass
         uses: stringbean/docker-healthcheck-action@v1
         with:
