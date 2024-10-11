@@ -30,6 +30,7 @@ async function autocompleteSourceForCKEditor(queryText) {
 }
 
 async function autocompleteSource(term, cb, options = {}) {
+    console.log(term)
     const activeNoteId = appContext.tabManager.getActiveContextNoteId();
 
     let results = await server.get(`autocomplete?query=${encodeURIComponent(term)}&activeNoteId=${activeNoteId}`);
@@ -220,6 +221,185 @@ function initNoteAutocomplete($el, options) {
     return $el;
 }
 
+function initNoteAutocompleteV1($el, options) {
+    if ($el.hasClass("note-autocomplete-input") || utils.isMobile()) {
+        // clear any event listener added in previous invocation of this function
+        $el.off('autocomplete:noteselected');
+
+        return $el;
+    }
+
+    const { autocomplete } = window['@algolia/autocomplete-js'];
+
+    options = options || {};
+
+    $el.addClass("note-autocomplete-input");
+
+    const $clearTextButton = $("<button>")
+        .addClass("input-group-text input-clearer-button bx bxs-tag-x")
+        .prop("title", "Clear text field");
+
+    const $showRecentNotesButton = $("<button>")
+        .addClass("input-group-text show-recent-notes-button bx bx-time")
+        .prop("title", "Show recent notes");
+
+    const $goToSelectedNoteButton = $("<button>")
+        .addClass("input-group-text go-to-selected-note-button bx bx-arrow-to-right");
+
+    $el.after($clearTextButton).after($showRecentNotesButton);
+
+    if (!options.hideGoToSelectedNoteButton) {
+        $el.after($goToSelectedNoteButton);
+    }
+
+    $clearTextButton.on('click', () => clearText($el));
+
+    $showRecentNotesButton.on('click', e => {
+        showRecentNotes($el);
+
+        // this will cause the click not give focus to the "show recent notes" button
+        // this is important because otherwise input will lose focus immediately and not show the results
+        return false;
+    });
+
+    let autocompleteOptions = {};
+    if (options.container) {
+        autocompleteOptions.dropdownMenuContainer = options.container;
+        autocompleteOptions.debug = true;   // don't close on blur
+    }
+
+    let search = autocomplete({
+        container: $el[0],
+        ...autocompleteOptions,
+        appendTo: document.querySelector('body'),
+        defaultActiveItemId: 0,
+        debug: true,
+        autoFocus: true,
+        getSources() {
+            return [
+                {
+                    sourceId: 'links',
+                    getItems() {
+                        return [
+                            { label: 'Twitter', url: 'https://twitter.com' },
+                            { label: 'GitHub', url: 'https://github.com' },
+                        ];
+                    },
+                    getItemUrl({ item }) {
+                        return item.url;
+                    },
+                    // ...
+                },
+            ];
+        }
+        // getSources({ query }) {
+        //     return [
+        //         {
+        //             sourceId: 'notes',
+        //             getItems({ query, cb }) {
+        //                 return autocompleteSource(query, cb, options);
+        //             },
+        //             templates: {
+        //                 item({ item }) {
+        //                     return html`<div>${item.highlightedNotePathTitle}</div>`;
+        //                 }
+        //             }
+        //         }
+        //     ];
+        // }
+    })
+
+    // Remove the search button
+    // const searchButton = $el[0].querySelector('.aa-DetachedSearchButton');
+    // if (searchButton) {
+    //     searchButton.remove();
+    // }
+
+    // $el.autocomplete({
+    //     ...autocompleteOptions,
+    //     appendTo: document.querySelector('body'),
+    //     hint: false,
+    //     autoselect: true,
+    //     // openOnFocus has to be false, otherwise re-focus (after return from note type chooser dialog) forces
+    //     // re-querying of the autocomplete source which then changes the currently selected suggestion
+    //     openOnFocus: false,
+    //     minLength: 0,
+    //     tabAutocomplete: false
+    // }, [
+    //     {
+    //         source: (term, cb) => autocompleteSource(term, cb, options),
+    //         displayKey: 'notePathTitle',
+    //         templates: {
+    //             suggestion: suggestion => suggestion.highlightedNotePathTitle
+    //         },
+    //         // we can't cache identical searches because notes can be created / renamed, new recent notes can be added
+    //         cache: false
+    //     }
+    // ]);
+
+    // $el.on('autocomplete:selected', async (event, suggestion) => {
+    //     if (suggestion.action === 'external-link') {
+    //         $el.setSelectedNotePath(null);
+    //         $el.setSelectedExternalLink(suggestion.externalLink);
+
+    //         $el.autocomplete("val", suggestion.externalLink);
+
+    //         $el.autocomplete("close");
+
+    //         $el.trigger('autocomplete:externallinkselected', [suggestion]);
+
+    //         return;
+    //     }
+
+    //     if (suggestion.action === 'create-note') {
+    //         const { success, noteType, templateNoteId } = await noteCreateService.chooseNoteType();
+
+    //         if (!success) {
+    //             return;
+    //         }
+
+    //         const { note } = await noteCreateService.createNote(suggestion.parentNoteId, {
+    //             title: suggestion.noteTitle,
+    //             activate: false,
+    //             type: noteType,
+    //             templateNoteId: templateNoteId
+    //         });
+
+    //         const hoistedNoteId = appContext.tabManager.getActiveContext()?.hoistedNoteId;
+    //         suggestion.notePath = note.getBestNotePathString(hoistedNoteId);
+    //     }
+
+    //     $el.setSelectedNotePath(suggestion.notePath);
+    //     $el.setSelectedExternalLink(null);
+
+    //     // $el.autocomplete("val", suggestion.noteTitle);
+    //     search.setQuery(suggestion.noteTitle)
+
+    //     // $el.autocomplete("close");
+    //     search.setIsOpen(false);
+
+    //     $el.trigger('autocomplete:noteselected', [suggestion]);
+    // });
+
+    // $el.on('autocomplete:closed', () => {
+    //     if (!$el.val().trim()) {
+    //         clearText($el);
+    //     }
+    // });
+
+    // $el.on('autocomplete:opened', () => {
+    //     if ($el.attr("readonly")) {
+    //         $el.autocomplete('close');
+    //     }
+    // });
+
+    // // clear any event listener added in previous invocation of this function
+    // $el.off('autocomplete:noteselected');
+
+    return $el;
+}
+
+
 function init() {
     $.fn.getSelectedNotePath = function () {
         if (!$(this).val().trim()) {
@@ -281,6 +461,7 @@ function init() {
 export default {
     autocompleteSourceForCKEditor,
     initNoteAutocomplete,
+    initNoteAutocompleteV1,
     showRecentNotes,
     setText,
     init

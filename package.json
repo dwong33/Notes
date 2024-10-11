@@ -49,6 +49,7 @@
     "generate-document": "cross-env nodemon src/tools/generate_document.ts 1000"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "1.17.4",
     "@braintree/sanitize-url": "7.1.0",
     "@electron/remote": "2.1.2",
     "@excalidraw/excalidraw": "0.17.6",

@@ -10,7 +10,6 @@ const TPL = `<div class="jump-to-note-dialog modal mx-auto" tabindex="-1" role="
         <div class="modal-content">
             <div class="modal-header">
                 <div class="input-group">
-                    <input class="jump-to-note-autocomplete form-control" placeholder="${t('jump_to_note.search_placeholder')}">
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -23,6 +22,7 @@ const TPL = `<div class="jump-to-note-dialog modal mx-auto" tabindex="-1" role="
         </div>
     </div>
 </div>`;
+// <input class="jump-to-note-autocomplete form-control" placeholder="${t('jump_to_note.search_placeholder')}">
 
 const KEEP_LAST_SEARCH_FOR_X_SECONDS = 120;
 
@@ -37,7 +37,17 @@ export default class JumpToNoteDialog extends BasicWidget {
         this.$widget = $(TPL);
         this.modal = bootstrap.Modal.getOrCreateInstance(this.$widget);
 
+        const { autocomplete } = window['@algolia/autocomplete-js'];
+
         this.$autoComplete = this.$widget.find(".jump-to-note-autocomplete");
+        this.$autoCompleteV1 = this.$widget.find('.input-group');
+        // this.autocomplete = autocomplete({
+        //     container: this.$widget.find('#autocomplete')[0],
+        //     placeholder: 'Search for products',
+        //     getSources() {
+        //         return [];
+        //     },
+        // });
         this.$results = this.$widget.find(".jump-to-note-results");
         this.$showInFullTextButton = this.$widget.find(".show-in-full-text-button");
         this.$showInFullTextButton.on('click', e => this.showInFullText(e));
@@ -55,7 +65,22 @@ export default class JumpToNoteDialog extends BasicWidget {
     }
 
     async refresh() {
-        noteAutocompleteService.initNoteAutocomplete(this.$autoComplete, {
+        // noteAutocompleteService.initNoteAutocomplete(this.$autoComplete, {
+        //     allowCreatingNotes: true,
+        //     hideGoToSelectedNoteButton: true,
+        //     container: this.$results
+        // })
+        //     // clear any event listener added in previous invocation of this function
+        //     .off('autocomplete:noteselected')
+        //     .on('autocomplete:noteselected', function (event, suggestion, dataset) {
+        //         if (!suggestion.notePath) {
+        //             return false;
+        //         }
+
+        //         appContext.tabManager.getActiveContext().setNote(suggestion.notePath);
+        //     });
+
+        noteAutocompleteService.initNoteAutocompleteV1(this.$autoCompleteV1, {
             allowCreatingNotes: true,
             hideGoToSelectedNoteButton: true,
             container: this.$results

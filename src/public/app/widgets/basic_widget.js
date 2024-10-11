@@ -85,11 +85,12 @@ class BasicWidget extends Component {
         try {
             this.doRender();
         } catch (e) {
+            console.error(e);
             toastService.showPersistent({
                 title: t("toast.widget-error.title"),
                 icon: "alert",
                 message: t("toast.widget-error.message", {
-                    title: this.widgetTitle,
+                    title: this.widgetTitle ? this.widgetTitle : this.sanitizedClassName,
                     message: e.message
                 })
             });
@@ -145,7 +146,7 @@ class BasicWidget extends Component {
      * Your class should override this method.
      * The method is expected to create a this.$widget containing jQuery object
      */
-    doRender() {}
+    doRender() { }
 
     toggleInt(show) {
         this.$widget.toggleClass('hidden-int', !show);
@@ -190,7 +191,7 @@ class BasicWidget extends Component {
         }
     }
 
-    cleanup() {}
+    cleanup() { }
 }
 
 export default BasicWidget;

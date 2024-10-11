@@ -86,6 +86,7 @@ function register(app: express.Application) {
     
     // Deprecated, https://www.npmjs.com/package/autocomplete.js?activeTab=readme
     app.use(`/${assetPath}/node_modules/autocomplete.js/dist/`, persistentCacheStatic(path.join(srcRoot, '..', 'node_modules/autocomplete.js/dist/')));
+    app.use(`/${assetPath}/node_modules/@algolia/autocomplete-js/dist/umd/`, persistentCacheStatic(path.join(srcRoot, '..', 'node_modules/@algolia/autocomplete-js/dist/umd/')));
 
     app.use(`/${assetPath}/node_modules/knockout/build/output/`, persistentCacheStatic(path.join(srcRoot, '..', 'node_modules/knockout/build/output/')));
 
