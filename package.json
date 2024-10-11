@@ -39,7 +39,7 @@
     "test": "npm run test-jasmine && npm run test-es6",
     "start-electron-forge": "npm run prepare-dist && electron-forge start",
     "make-electron": "npm run webpack && npm run prepare-dist && electron-forge make",
-    "package-electron": "electron-forge package",
+    "package-electron": "npm run webpack && npm run prepare-dist && electron-forge package",
     "prepare-dist": "rimraf ./dist && tsc && tsx ./bin/copy-dist.ts",
     "update-build-info": "tsx bin/update-build-info.ts",
     "errors": "tsc --watch --noEmit",
