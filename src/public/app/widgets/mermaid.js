@@ -33,6 +33,10 @@ const TPL = `<div class="mermaid-widget">
     </div>
 
     <div class="mermaid-render"></div>
+    <div class="export-options">
+        <button class="export-svg">${t('mermaid.export_svg')}</button>
+        <button class="export-png">${t('mermaid.export_png')}</button>
+    </div>
 </div>`;
 
 let idCounter = 1;
@@ -51,6 +55,9 @@ export default class MermaidWidget extends NoteContextAwareWidget {
         this.$display = this.$widget.find('.mermaid-render');
         this.$errorContainer = this.$widget.find(".mermaid-error");
         this.$errorMessage = this.$errorContainer.find(".error-content");
+
+        this.$widget.find('.export-svg').on('click', () => this.exportSvgEvent({ format: 'svg' }));
+        this.$widget.find('.export-png').on('click', () => this.exportSvgEvent({ format: 'png' }));
     }
 
     async refreshWithNote(note) {
@@ -134,12 +141,54 @@ export default class MermaidWidget extends NoteContextAwareWidget {
         }
     }
 
-    async exportSvgEvent({ntxId}) {
-        if (!this.isNoteContext(ntxId) || this.note.type !== "mermaid") {
-            return;
-        }
-
+    async exportSvgEvent({ format = 'svg' }) {
+        console.log('Export event triggered with format:', format);
         const svg = await this.renderSvg();
-        utils.downloadSvg(this.note.title, svg);
+        console.log('SVG rendered:', svg);
+    
+        if (format === 'png') {
+            try {
+                const png = await this.convertSvgToPng(svg);
+                console.log('PNG converted:', png);
+                utils.downloadPng(this.note.title, png);
+                console.log('PNG download triggered');
+            } catch (error) {
+                console.error('Error converting SVG to PNG:', error);
+            }
+        } else {
+            utils.downloadSvg(this.note.title, svg);
+            console.log('SVG download triggered');
+        }
+    }
+    
+    async convertSvgToPng(svg) {
+        return new Promise((resolve, reject) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+    
+            img.onload = () => {
+                console.log('Image loaded');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        resolve(blob);
+                    } else {
+                        reject(new Error('Canvas toBlob conversion failed'));
+                    }
+                }, 'image/png');
+            };
+    
+            img.onerror = (e) => {
+                console.error('Image load error:', e);
+                reject(e);
+            };
+    
+            const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+            console.log('SVG Data URL:', svgDataUrl);
+            img.src = svgDataUrl;
+        });
     }
 }

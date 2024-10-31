@@ -527,6 +527,31 @@ function downloadSvg(nameWithoutExtension, svgContent) {
     document.body.removeChild(element);
 }
 
+function downloadPng(nameWithoutExtension, pngBlob) {
+    console.log('downloadPng called with:', nameWithoutExtension, pngBlob);
+
+    if (!pngBlob) {
+        console.error('PNG blob is null or undefined');
+        return;
+    }
+
+    const filename = `${nameWithoutExtension}.png`;
+    const url = URL.createObjectURL(pngBlob);
+    console.log('Blob URL:', url);
+    const element = document.createElement('a');
+    element.setAttribute('href', url);
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+    URL.revokeObjectURL(url);
+    console.log('PNG download triggered');
+}
+
 export default {
     reloadFrontendApp,
     parseDate,
@@ -567,5 +592,6 @@ export default {
     areObjectsEqual,
     copyHtmlToClipboard,
     createImageSrcUrl,
-    downloadSvg
+    downloadSvg,
+    downloadPng
 };
