@@ -528,28 +528,33 @@ function downloadSvg(nameWithoutExtension, svgContent) {
 }
 
 function downloadPng(nameWithoutExtension, pngBlob) {
-    console.log('downloadPng called with:', nameWithoutExtension, pngBlob);
-
     if (!pngBlob) {
         console.error('PNG blob is null or undefined');
         return;
     }
 
     const filename = `${nameWithoutExtension}.png`;
-    const url = URL.createObjectURL(pngBlob);
-    console.log('Blob URL:', url);
-    const element = document.createElement('a');
-    element.setAttribute('href', url);
-    element.setAttribute('download', filename);
+    const reader = new FileReader();
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
+    reader.onload = (event) => {
+        const url = event.target.result;
+        const element = document.createElement('a');
+        element.setAttribute('href', url);
+        element.setAttribute('download', filename);
 
-    element.click();
+        element.style.display = 'none';
+        document.body.appendChild(element);
 
-    document.body.removeChild(element);
-    URL.revokeObjectURL(url);
-    console.log('PNG download triggered');
+        element.click();
+
+        document.body.removeChild(element);
+    };
+
+    reader.onerror = (error) => {
+        console.error('Error reading PNG blob:', error);
+    };
+
+    reader.readAsDataURL(pngBlob);
 }
 
 export default {

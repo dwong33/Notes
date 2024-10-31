@@ -148,7 +148,7 @@ export default class MermaidWidget extends NoteContextAwareWidget {
     
         if (format === 'png') {
             try {
-                const png = await this.convertSvgToPng(svg);
+                const png = await this.convertSvgToPng(svg, 2); // Adjust the scale factor as needed
                 console.log('PNG converted:', png);
                 utils.downloadPng(this.note.title, png);
                 console.log('PNG download triggered');
