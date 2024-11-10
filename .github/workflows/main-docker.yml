@@ -234,44 +234,49 @@ jobs:
       
       - name: Create manifest list and push
         working-directory: /tmp/digests
-        run: |
-          # Extract the branch or tag name from the ref
-          REF_NAME=$(echo "${GITHUB_REF}" | sed 's/refs\/heads\///' | sed 's/refs\/tags\///')
+        id: create_manifest
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: |
+            # Extract the branch or tag name from the ref
+            REF_NAME=$(echo "${GITHUB_REF}" | sed 's/refs\/heads\///' | sed 's/refs\/tags\///')
 
-          # Create and push the manifest list with both the branch/tag name and the commit SHA
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            -t ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:${REF_NAME} \
-            $(printf '${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
-          
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            -t ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:${REF_NAME} \
-            $(printf '${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
-
-          # If the ref is a tag, also tag the image as stable as this is part of a 'release'
-          # and only go in the `if` if there is NOT a `-` in the tag's name, due to tagging of `-alpha`, `-beta`, etc...
-          if [[ "${GITHUB_REF}" == refs/tags/* && ! "${REF_NAME}" =~ - ]]; then
-            # First create stable tags
+            # Create and push the manifest list with both the branch/tag name and the commit SHA
             docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-              -t ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:stable \
+              -t ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:${REF_NAME} \
               $(printf '${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
             
             docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-              -t ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:stable \
+              -t ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:${REF_NAME} \
               $(printf '${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
-        
-            # Small delay to ensure stable tag is fully propagated
-            sleep 5
-        
-            # Now update latest tags
-            docker buildx imagetools create \
-              -t ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-              ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:stable
-            
-            docker buildx imagetools create \
-              -t ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-              ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:stable
-        
-          fi
+
+            # If the ref is a tag, also tag the image as stable as this is part of a 'release'
+            # and only go in the `if` if there is NOT a `-` in the tag's name, due to tagging of `-alpha`, `-beta`, etc...
+            if [[ "${GITHUB_REF}" == refs/tags/* && ! "${REF_NAME}" =~ - ]]; then
+              # First create stable tags
+              docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                -t ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:stable \
+                $(printf '${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+              
+              docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                -t ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:stable \
+                $(printf '${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+          
+              # Small delay to ensure stable tag is fully propagated
+              sleep 5
+          
+              # Now update latest tags
+              docker buildx imagetools create \
+                -t ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+                ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}:stable
+              
+              docker buildx imagetools create \
+                -t ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+                ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:stable
+          
+            fi
       
       - name: Inspect image
         run: |
