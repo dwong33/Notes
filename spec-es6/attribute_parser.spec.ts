@@ -1,6 +1,6 @@
 import * as attributeParser from '../src/public/app/services/attribute_parser.js';
 
-import {describe, it, expect, execute} from './mini_test';
+import {describe, it, expect, execute} from './mini_test.js';
 
 describe("Lexing", () => {
     it("simple label", () => {

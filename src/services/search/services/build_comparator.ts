@@ -42,4 +42,4 @@ function buildComparator(operator: string, comparedValue: string) {
     }
 }
 
-export = buildComparator;
+export default buildComparator;

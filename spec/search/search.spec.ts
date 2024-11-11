@@ -1,11 +1,10 @@
-import searchService = require('../../src/services/search/services/search');
-import BNote = require('../../src/becca/entities/bnote');
-import BBranch = require('../../src/becca/entities/bbranch');
-import SearchContext = require('../../src/services/search/search_context');
-import dateUtils = require('../../src/services/date_utils');
-import becca = require('../../src/becca/becca');
-// const { NoteBuilder, findNoteByTitle, note } = require("./becca_mocking");
-import becca_mocking = require('./becca_mocking');
+import searchService from "../../src/services/search/services/search.js";
+import BNote from "../../src/becca/entities/bnote.js";
+import BBranch from "../../src/becca/entities/bbranch.js";
+import SearchContext from "../../src/services/search/search_context.js";
+import dateUtils from "../../src/services/date_utils.js";
+import becca from "../../src/becca/becca.js";
+import becca_mocking from "./becca_mocking.js";
 
 describe('Search', () => {
     let rootNote: any;

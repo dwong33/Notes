@@ -1,22 +1,47 @@
-import optionService = require('./options');
-import appInfo = require('./app_info');
-import utils = require('./utils');
-import log = require('./log');
-import dateUtils = require('./date_utils');
-import keyboardActions = require('./keyboard_actions');
-import { KeyboardShortcutWithRequiredActionName } from './keyboard_actions_interface';
+import optionService from "./options.js";
+import type { OptionMap } from "./options.js";
+import appInfo from "./app_info.js";
+import utils from "./utils.js";
+import log from "./log.js";
+import dateUtils from "./date_utils.js";
+import keyboardActions from "./keyboard_actions.js";
+import { KeyboardShortcutWithRequiredActionName } from './keyboard_actions_interface.js';
 
 function initDocumentOptions() {
     optionService.createOption('documentId', utils.randomSecureToken(16), false);
     optionService.createOption('documentSecret', utils.randomSecureToken(16), false);
 }
 
+/**
+ * Contains additional options to be initialized for a new database, containing the information entered by the user.
+ */
 interface NotSyncedOpts {
     syncServerHost?: string;
     syncProxy?: string;
 }
 
-function initNotSyncedOptions(initialized: boolean, opts: NotSyncedOpts = {}) {
+/**
+ * Represents a correspondence between an option and its default value, to be initialized when the database is missing that particular option (after a migration from an older version, or when creating a new database).
+ */
+interface DefaultOption {
+    name: string;
+    /**
+     * The value to initialize the option with, if the option is not already present in the database.
+     * 
+     * If a function is passed in instead, the function is called if the option does not exist (with access to the current options) and the return value is used instead. Useful to migrate a new option with a value depending on some other option that might be initialized.
+     */
+    value: string | ((options: OptionMap) => string);
+    isSynced: boolean;
+}
+
+/**
+ * Initializes the default options for new databases only.
+ * 
+ * @param initialized `true` if the database has been fully initialized (i.e. a new database was created), or `false` if the database is created for sync.
+ * @param theme the theme to set as default, based on a user's system preference.
+ * @param opts additional options to be initialized, for example the sync configuration.
+ */
+async function initNotSyncedOptions(initialized: boolean, theme: string, opts: NotSyncedOpts = {}) {
     optionService.createOption('openNoteContexts', JSON.stringify([
         {
             notePath: 'root',
@@ -32,25 +57,21 @@ function initNotSyncedOptions(initialized: boolean, opts: NotSyncedOpts = {}) {
     optionService.createOption('initialized', initialized ? 'true' : 'false', false);
 
     optionService.createOption('lastSyncedPull', '0', false);
-    optionService.createOption('lastSyncedPush', '0', false);
-
-    let theme = 'dark'; // default based on the poll in https://github.com/zadam/trilium/issues/2516
-
-    if (utils.isElectron()) {
-        const {nativeTheme} = require('electron');
-
-        theme = nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
-    }
+    optionService.createOption('lastSyncedPush', '0', false);    
 
     optionService.createOption('theme', theme, false);
-
+    
     optionService.createOption('syncServerHost', opts.syncServerHost || '', false);
     optionService.createOption('syncServerTimeout', '120000', false);
     optionService.createOption('syncProxy', opts.syncProxy || '', false);
 }
 
-const defaultOptions = [
+/**
+ * Contains all the default options that must be initialized on new and existing databases (at startup). The value can also be determined based on other options, provided they have already been initialized.
+ */
+const defaultOptions: DefaultOption[] = [
     { name: 'revisionSnapshotTimeInterval', value: '600', isSynced: true },
+    { name: 'revisionSnapshotNumberLimit', value: '-1', isSynced: true },
     { name: 'protectedSessionTimeout', value: '600', isSynced: true },
     { name: 'zoomFactor', value: process.platform === "win32" ? '0.9' : '1.0', isSynced: false },
     { name: 'overrideThemeFonts', value: 'false', isSynced: false },
@@ -96,9 +117,31 @@ const defaultOptions = [
     { name: 'customSearchEngineName', value: 'DuckDuckGo', isSynced: true },
     { name: 'customSearchEngineUrl', value: 'https://duckduckgo.com/?q={keyword}', isSynced: true },
     { name: 'promotedAttributesOpenInRibbon', value: 'true', isSynced: true },
-    { name: 'editedNotesOpenInRibbon', value: 'true', isSynced: true }
+    { name: 'editedNotesOpenInRibbon', value: 'true', isSynced: true },
+
+    // Internationalization
+    { name: 'locale', value: 'en', isSynced: true },
+    { name: 'firstDayOfWeek', value: '1', isSynced: true },
+
+    // Code block configuration
+    { name: "codeBlockTheme", value: (optionsMap) => {
+        if (optionsMap.theme === "light") {
+            return "default:stackoverflow-light";
+        } else {
+            return "default:stackoverflow-dark";
+        }
+    }, isSynced: false },
+    { name: "codeBlockWordWrap", value: "false", isSynced: true },
+
+    // Text note configuration
+    { name: "textNoteEditorType", value: "ckeditor-balloon", isSynced: true }
 ];
 
+/**
+ * Initializes the options, by checking which options from {@link #allDefaultOptions()} are missing and registering them. It will also check some environment variables such as safe mode, to make any necessary adjustments.
+ * 
+ * This method is called regardless of whether a new database is created, or an existing database is used.
+ */
 function initStartupOptions() {
     const optionsMap = optionService.getOptionMap();
 
@@ -106,9 +149,15 @@ function initStartupOptions() {
 
     for (const {name, value, isSynced} of allDefaultOptions) {
         if (!(name in optionsMap)) {
-            optionService.createOption(name, value, isSynced);
+            let resolvedValue;
+            if (typeof value === "function") {
+                resolvedValue = value(optionsMap);
+            } else {
+                resolvedValue = value;
+            }
 
-            log.info(`Created option "${name}" with default value "${value}"`);
+            optionService.createOption(name, resolvedValue, isSynced);
+            log.info(`Created option "${name}" with default value "${resolvedValue}"`);
         }
     }
 
@@ -123,7 +172,7 @@ function initStartupOptions() {
 }
 
 function getKeyboardDefaultOptions() {
-    return (keyboardActions.DEFAULT_KEYBOARD_ACTIONS
+    return (keyboardActions.getDefaultKeyboardActions()
         .filter(ka => !!ka.actionName) as KeyboardShortcutWithRequiredActionName[])
         .map(ka => ({
             name: `keyboardShortcuts${ka.actionName.charAt(0).toUpperCase()}${ka.actionName.slice(1)}`,
@@ -132,7 +181,7 @@ function getKeyboardDefaultOptions() {
         }));
 }
 
-export = {
+export default {
     initDocumentOptions,
     initNotSyncedOptions,
     initStartupOptions

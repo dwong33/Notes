@@ -1,5 +1,5 @@
-import child_process = require("child_process");
-import kill = require("tree-kill");
+import child_process from "child_process";
+import kill from "tree-kill";
 
 let etapiAuthToken: string | undefined;
 
@@ -164,7 +164,7 @@ function checkStatus(response: Response): void {
   }
 }
 
-export {
+export default {
   describeEtapi,
   getEtapi,
   getEtapiResponse,

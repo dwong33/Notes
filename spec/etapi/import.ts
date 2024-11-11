@@ -1,12 +1,15 @@
-import etapi = require("../support/etapi");
-import fs = require("fs");
-import path = require("path");
+import etapi from "../support/etapi.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 etapi.describeEtapi("import", () => {
   // temporarily skip this test since test-export.zip is missing
   xit("import", async () => {
+    const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+
     const zipFileBuffer = fs.readFileSync(
-      path.resolve(__dirname, "test-export.zip")
+      path.resolve(scriptDir, "test-export.zip")
     );
 
     const response = await etapi.postEtapiContent(

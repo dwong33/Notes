@@ -1,4 +1,4 @@
-import etapi = require("../support/etapi");
+import etapi from "../support/etapi.js";
 
 etapi.describeEtapi("backup", () => {
   it("create", async () => {

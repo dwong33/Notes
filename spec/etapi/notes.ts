@@ -1,5 +1,5 @@
-import crypto = require("crypto");
-import etapi = require("../support/etapi");
+import crypto from "crypto";
+import etapi from "../support/etapi.js";
 
 etapi.describeEtapi("notes", () => {
   it("create", async () => {

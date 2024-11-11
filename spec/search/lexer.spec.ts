@@ -1,4 +1,4 @@
-import lex = require("../../src/services/search/services/lex");
+import lex from "../../src/services/search/services/lex.js";
 
 describe("Lexer fulltext", () => {
   it("simple lexing", () => {

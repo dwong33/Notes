@@ -16,7 +16,7 @@ function getGitRevision() {
 }
 
 const output = `\
-export = {
+export default {
     buildDate: "${getBuildDate()}",
     buildRevision: "${getGitRevision()}"
 };

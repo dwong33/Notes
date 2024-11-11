@@ -1,7 +1,7 @@
-import becca_mocking = require('./becca_mocking');
-import ValueExtractor = require('../../src/services/search/value_extractor');
-import becca = require('../../src/becca/becca');
-import SearchContext = require('../../src/services/search/search_context');
+import becca_mocking from "./becca_mocking.js";
+import ValueExtractor from "../../src/services/search/value_extractor.js";
+import becca from "../../src/becca/becca.js";
+import SearchContext from "../../src/services/search/search_context.js";
 
 const dsc = new SearchContext();
 

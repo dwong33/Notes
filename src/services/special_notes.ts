@@ -1,13 +1,14 @@
-import attributeService = require('./attributes');
-import dateNoteService = require('./date_notes');
-import becca = require('../becca/becca');
-import noteService = require('./notes');
-import dateUtils = require('./date_utils');
-import log = require('./log');
-import hoistedNoteService = require('./hoisted_note');
-import searchService = require('./search/services/search');
-import SearchContext = require('./search/search_context');
-import hiddenSubtree = require('./hidden_subtree');
+import attributeService from "./attributes.js";
+import dateNoteService from "./date_notes.js";
+import becca from "../becca/becca.js";
+import noteService from "./notes.js";
+import dateUtils from "./date_utils.js";
+import log from "./log.js";
+import hoistedNoteService from "./hoisted_note.js";
+import searchService from "./search/services/search.js";
+import SearchContext from "./search/search_context.js";
+import hiddenSubtree from "./hidden_subtree.js";
+import { t } from "i18next";
 const { LBTPL_NOTE_LAUNCHER, LBTPL_CUSTOM_WIDGET, LBTPL_SPACER, LBTPL_SCRIPT } = hiddenSubtree;
 
 function getInboxNote(date: string) {
@@ -75,7 +76,7 @@ function saveSqlConsole(sqlConsoleNoteId: string) {
 function createSearchNote(searchString: string, ancestorNoteId: string) {
     const {note} = noteService.createNewNote({
         parentNoteId: getMonthlyParentNoteId('_search', 'search'),
-        title: `Search: ${searchString}`,
+        title: `${t("special_notes.search_prefix")} ${searchString}`,
         content: "",
         type: 'search',
         mime: 'application/json'
@@ -287,7 +288,7 @@ function createOrUpdateScriptLauncherFromApi(opts: {
     return launcherNote;
 }
 
-export = {
+export default {
     getInboxNote,
     createSqlConsole,
     saveSqlConsole,

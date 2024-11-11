@@ -2,9 +2,9 @@
 // There are many issues with the types of the parser e.g. "parse" function returns "Expression"
 // but we access properties like "subExpressions" which is not defined in the "Expression" class.
 
-import Expression = require('../../src/services/search/expressions/expression');
-import SearchContext = require('../../src/services/search/search_context');
-import parse = require('../../src/services/search/services/parse');
+import Expression from "../../src/services/search/expressions/expression.js";
+import SearchContext from "../../src/services/search/search_context.js";
+import parse from "../../src/services/search/services/parse.js";
 
 function tokens(toks: Array<string>, cur = 0): Array<any> {
     return toks.map((arg) => {

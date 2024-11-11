@@ -1,12 +1,17 @@
 "use strict";
 
-import crypto = require('crypto');
-const randtoken = require('rand-token').generator({source: 'crypto'});
-import unescape = require('unescape');
-import escape = require('escape-html');
-import sanitize = require("sanitize-filename");
-import mimeTypes = require('mime-types');
-import path = require('path');
+import crypto from "crypto";
+import { generator } from "rand-token";
+import unescape from "unescape";
+import escape from "escape-html";
+import sanitize from "sanitize-filename";
+import mimeTypes from "mime-types";
+import path from "path";
+import { fileURLToPath } from "url";
+import env from "./env.js";
+import { dirname, join } from "path";
+
+const randtoken = generator({source: 'crypto'});
 
 function newEntityId() {
     return randomString(12);
@@ -123,11 +128,10 @@ function escapeRegExp(str: string) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
 
-function crash() {
+async function crash() {
     if (isElectron()) {
-        require('electron').app.exit(1);
-    }
-    else {
+        (await import("electron")).app.exit(1);
+    } else {
         process.exit(1);
     }
 }
@@ -173,7 +177,7 @@ function replaceAll(string: string, replaceWhat: string, replaceWith: string) {
     return string.replace(new RegExp(quotedReplaceWhat, "g"), replaceWith);
 }
 
-function formatDownloadTitle(fileName: string, type: string, mime: string) {
+function formatDownloadTitle(fileName: string, type: string | null, mime: string) {
     if (!fileName) {
         fileName = "untitled";
     }
@@ -182,7 +186,7 @@ function formatDownloadTitle(fileName: string, type: string, mime: string) {
 
     if (type === 'text') {
         return `${fileName}.html`;
-    } else if (['relationMap', 'canvas', 'search'].includes(type)) {
+    } else if (type && ['relationMap', 'canvas', 'search'].includes(type)) {
         return `${fileName}.json`;
     } else {
         if (!mime) {
@@ -218,11 +222,14 @@ function formatDownloadTitle(fileName: string, type: string, mime: string) {
 function removeTextFileExtension(filePath: string) {
     const extension = path.extname(filePath).toLowerCase();
 
-    if (extension === '.md' || extension === '.markdown' || extension === '.html') {
-        return filePath.substr(0, filePath.length - extension.length);
-    }
-    else {
-        return filePath;
+    switch (extension) {
+        case ".md":
+        case ".markdown":
+        case ".html":
+        case ".htm":
+            return filePath.substr(0, filePath.length - extension.length);
+        default:
+            return filePath;
     }
 }
 
@@ -311,7 +318,21 @@ function isString(x: any) {
     return Object.prototype.toString.call(x) === "[object String]";
 }
 
-export = {
+/**
+ * Returns the directory for resources. On Electron builds this corresponds to the `resources` subdirectory inside the distributable package.
+ * On development builds, this simply refers to the root directory of the application.
+ * 
+ * @returns the resource dir.
+ */
+export function getResourceDir() {
+    if (isElectron() && !env.isDev()) {
+        return process.resourcesPath;
+    } else {
+        return join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+    }    
+}
+
+export default {
     randomSecureToken,
     randomString,
     md5,
@@ -343,5 +364,6 @@ export = {
     normalize,
     hashedBlobId,
     toMap,
-    isString
+    isString,
+    getResourceDir
 };

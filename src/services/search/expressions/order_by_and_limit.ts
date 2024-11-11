@@ -1,9 +1,9 @@
 "use strict";
 
-import BNote = require("../../../becca/entities/bnote");
-import NoteSet = require("../note_set");
-import SearchContext = require("../search_context");
-import Expression = require("./expression");
+import BNote from "../../../becca/entities/bnote.js";
+import NoteSet from "../note_set.js";
+import SearchContext from "../search_context.js";
+import Expression from "./expression.js";
 
 interface ValueExtractor {
     extract: (note: BNote) => number | string | null;
@@ -46,8 +46,8 @@ class OrderByAndLimitExp extends Expression {
 
         notes.sort((a, b) => {
             for (const {valueExtractor, smaller, larger} of this.orderDefinitions) {
-                let valA = valueExtractor.extract(a);
-                let valB = valueExtractor.extract(b);
+                let valA: string | number | Date | null = valueExtractor.extract(a);
+                let valB: string | number | Date | null = valueExtractor.extract(b);
 
                 if (valA === undefined) {
                     valA = null;
@@ -68,8 +68,16 @@ class OrderByAndLimitExp extends Expression {
                     return larger;
                 }
 
+                
+                // if both are dates, then parse them for dates comparison
+                if (typeof valA === "string" && this.isDate(valA) &&
+                    typeof valB === "string" && this.isDate(valB)) {
+                    valA = new Date(valA);
+                    valB = new Date(valB);
+                }
+
                 // if both are numbers, then parse them for numerical comparison
-                if (typeof valA === "string" && this.isNumber(valA) &&
+                else if (typeof valA === "string" && this.isNumber(valA) &&
                     typeof valB === "string" && this.isNumber(valB)) {
                     valA = parseFloat(valA);
                     valB = parseFloat(valB);
@@ -99,6 +107,10 @@ class OrderByAndLimitExp extends Expression {
         return noteSet;
     }
 
+    isDate(date: number | string) {
+      return !isNaN(new Date(date).getTime());
+    }
+
     isNumber(x: number | string) {
         if (typeof x === 'number') {
             return true;
@@ -111,4 +123,4 @@ class OrderByAndLimitExp extends Expression {
     }
 }
 
-export = OrderByAndLimitExp;
+export default OrderByAndLimitExp;

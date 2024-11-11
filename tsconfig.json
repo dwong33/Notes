@@ -1,8 +1,6 @@
 {
 	"compilerOptions": {
-      "moduleResolution": "Node16",
-	  "module": "Node16",
-	  "target": "ES2018",
+	  "module": "NodeNext",
 	  "declaration": false,
 	  "sourceMap": true,
 	  "outDir": "./build",
@@ -16,15 +14,12 @@
 	},
 	"include": [
     "./src/**/*.js",
-	  "./src/**/*.ts",
+	"./src/**/*.ts",
     "./*.ts",
     "./spec/**/*.ts",
     "./spec-es6/**/*.ts"
 	],
 	"exclude": ["./node_modules/**/*"],
-	"ts-node": {
-		"files": true
-	},
 	"files": [
 		"src/types.d.ts"
 	]
